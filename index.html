@@ -1,0 +1,1578 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal de Seguimiento de Becas</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #F8F9FA; min-height: 100vh; }
+        .view { display: none; min-height: 100vh; }
+        .view.active { display: flex; flex-direction: column; }
+        
+        /* ICON SIZING */
+        .kpi-icon i { font-size: 1.4rem; }
+        .card-icon i { font-size: 3.5rem; }
+        .timeline-icon i { font-size: 0.7rem; }
+        
+        /* HEADER */
+        .header { background: #004085; color: white; padding: 25px 40px; text-align: center; }
+        .header h1 { font-size: 2rem; font-weight: 600; }
+        
+        /* HOME PAGE - Q10 STYLE */
+        .home-hero { background: linear-gradient(135deg, #004085 0%, #003366 50%, #002244 100%); color: white; padding: 60px 40px 40px; text-align: center; position: relative; overflow: hidden; }
+        .home-hero::before { content: ''; position: absolute; top: -50%; right: -20%; width: 600px; height: 600px; background: rgba(255,255,255,0.05); border-radius: 50%; }
+        .home-hero::after { content: ''; position: absolute; bottom: -30%; left: -10%; width: 400px; height: 400px; background: rgba(255,255,255,0.03); border-radius: 50%; }
+        .home-hero h1 { font-size: 2.2rem; font-weight: 700; margin-bottom: 10px; position: relative; z-index: 1; }
+        .home-hero p { font-size: 1.1rem; opacity: 0.9; margin-bottom: 5px; position: relative; z-index: 1; }
+        .home-hero .subtitle { font-size: 0.95rem; opacity: 0.7; position: relative; z-index: 1; }
+        
+        .home-content { flex: 1; padding: 40px 20px; background: linear-gradient(180deg, #e8ecf1 0%, #F8F9FA 100%); }
+        
+        /* ROLE SELECTION */
+        .role-section { max-width: 900px; margin: 0 auto; }
+        .role-section h2 { text-align: center; color: #004085; font-size: 1.5rem; margin-bottom: 8px; font-weight: 700; }
+        .role-section .section-subtitle { text-align: center; color: #666; margin-bottom: 35px; font-size: 0.95rem; }
+        
+        .role-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 40px; }
+        
+        .role-card { background: white; border-radius: 16px; padding: 35px 30px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.08); transition: all 0.3s ease; cursor: pointer; border: 3px solid transparent; position: relative; overflow: hidden; }
+        .role-card:hover { transform: translateY(-8px); box-shadow: 0 12px 40px rgba(0,0,0,0.15); }
+        .role-card.docente-role { border-color: #004085; }
+        .role-card.docente-role:hover { border-color: #003366; background: linear-gradient(180deg, #f0f4ff 0%, white 100%); }
+        .role-card.psicologia-role { border-color: #28a745; }
+        .role-card.psicologia-role:hover { border-color: #218838; background: linear-gradient(180deg, #f0fff4 0%, white 100%); }
+        
+        .role-card .card-icon { width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; }
+        .role-card.docente-role .card-icon { background: linear-gradient(135deg, #004085, #003366); color: white; }
+        .role-card.psicologia-role .card-icon { background: linear-gradient(135deg, #28a745, #218838); color: white; }
+        
+        .role-card h3 { font-size: 1.3rem; font-weight: 700; margin-bottom: 10px; }
+        .role-card.docente-role h3 { color: #004085; }
+        .role-card.psicologia-role h3 { color: #28a745; }
+        
+        .role-card p { color: #666; font-size: 0.9rem; line-height: 1.5; margin-bottom: 20px; }
+        
+        .role-card .btn-role { padding: 12px 40px; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s; }
+        .role-card.docente-role .btn-role { background: #004085; color: white; }
+        .role-card.docente-role .btn-role:hover { background: #003366; transform: scale(1.05); }
+        .role-card.psicologia-role .btn-role { background: #28a745; color: white; }
+        .role-card.psicologia-role .btn-role:hover { background: #218838; transform: scale(1.05); }
+        
+        .role-card .features { text-align: left; margin: 20px 0; padding: 15px; background: #f8f9fa; border-radius: 8px; }
+        .role-card .features li { list-style: none; padding: 6px 0; font-size: 0.85rem; color: #555; }
+        .role-card .features li::before { content: '\f00c'; font-family: 'Font Awesome 6 Free'; font-weight: 900; margin-right: 8px; color: #28a745; }
+        
+        /* INFO SECTION */
+        .info-section { max-width: 900px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        .info-card { background: white; border-radius: 12px; padding: 25px 20px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.06); }
+        .info-card .info-icon { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; font-size: 1.2rem; }
+        .info-card:nth-child(1) .info-icon { background: #e6f0ff; color: #004085; }
+        .info-card:nth-child(2) .info-icon { background: #e6f9e6; color: #28a745; }
+        .info-card:nth-child(3) .info-icon { background: #fff3cd; color: #FF9800; }
+        .info-card h4 { color: #333; font-size: 1rem; margin-bottom: 8px; }
+        .info-card p { color: #666; font-size: 0.85rem; line-height: 1.4; }
+        
+        /* MAIN HOME */
+        .main-content { flex: 1; display: flex; justify-content: center; align-items: center; padding: 60px 20px; background: linear-gradient(135deg, #f5f7fa, #e8ecf1); }
+        .cards-container { display: flex; gap: 50px; flex-wrap: wrap; justify-content: center; }
+        .module-card { background: white; border-radius: 12px; padding: 40px 50px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.1); transition: all 0.3s; min-width: 280px; cursor: pointer; }
+        .module-card:hover { transform: translateY(-8px); box-shadow: 0 8px 30px rgba(0,0,0,0.15); }
+        .docente-card { border: 3px solid #004085; }
+        .psicologia-card { border: 3px solid #28a745; }
+        .card-title { font-size: 1.4rem; font-weight: 600; margin: 20px 0 25px; color: #004085; }
+        .psicologia-title { color: #28a745; }
+        .btn-ingresar { background: #004085; color: white; border: none; padding: 12px 35px; font-size: 1rem; border-radius: 6px; cursor: pointer; transition: all 0.3s; }
+        .btn-ingresar:hover { background: #003366; transform: scale(1.05); }
+        .btn-psicologia { background: #28a745; }
+        .btn-psicologia:hover { background: #218838; }
+        .footer { background: #004085; color: white; text-align: center; padding: 12px; font-size: 0.85rem; }
+        .footer .sync-info { font-size: 0.75rem; opacity: 0.8; margin-top: 5px; }
+        
+        /* MODAL */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000; overflow-y: auto; padding: 20px; }
+        .modal.active { display: flex; }
+        .modal-content { background: white; border-radius: 12px; padding: 30px; width: 100%; max-width: 500px; position: relative; max-height: 90vh; overflow-y: auto; }
+        .close-modal { position: absolute; top: 15px; right: 20px; font-size: 28px; cursor: pointer; color: #666; }
+        .modal-header { text-align: center; margin-bottom: 25px; }
+        .modal-header h2 { color: #004085; font-size: 1.4rem; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 6px; font-weight: 500; font-size: 0.9rem; }
+        .form-group input, .form-group select { width: 100%; padding: 10px; border: 2px solid #e0e0e0; border-radius: 6px; font-size: 0.95rem; }
+        .form-group input:focus, .form-group select:focus { outline: none; border-color: #004085; }
+        .error-message { background: #ffe6e6; color: #cc0000; padding: 10px; border-radius: 6px; margin-bottom: 15px; text-align: center; display: none; }
+        .btn-submit { width: 100%; background: #004085; color: white; border: none; padding: 12px; font-size: 1rem; font-weight: 600; border-radius: 6px; cursor: pointer; }
+        .btn-submit:hover { background: #003366; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        
+        /* DASHBOARD HEADER */
+        .dashboard-header { background: #004085; color: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; }
+        .dashboard-header h1 { font-size: 1.3rem; }
+        .psicologia-header { background: #28a745; }
+        .header-actions { display: flex; gap: 10px; align-items: center; }
+        .btn-logout { background: transparent; color: white; border: 2px solid white; padding: 8px 20px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; }
+        .btn-logout:hover { background: white; color: #004085; }
+        .btn-nuevo { background: #28a745; color: white; border: none; padding: 8px 20px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; }
+        .btn-nuevo:hover { background: #218838; }
+        
+        /* BREADCRUMBS */
+        .breadcrumbs { padding: 12px 30px; background: #e9ecef; font-size: 0.85rem; }
+        .breadcrumbs a { color: #004085; text-decoration: none; }
+        .breadcrumbs a:hover { text-decoration: underline; }
+        .breadcrumbs .sep { margin: 0 8px; color: #666; }
+        
+        /* DASHBOARD CONTENT */
+        .dashboard-content { flex: 1; padding: 25px 30px; }
+        
+        /* KPIs */
+        .kpi-container { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 25px; }
+        .kpi-card { background: white; border-radius: 10px; padding: 18px 20px; display: flex; align-items: center; gap: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); border-left: 4px solid #004085; }
+        .kpi-card:nth-child(2) { border-left-color: #28A745; }
+        .kpi-card:nth-child(3) { border-left-color: #FFC107; }
+        .kpi-card:nth-child(4) { border-left-color: #DC3545; }
+        .kpi-icon { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .kpi-card:nth-child(1) .kpi-icon { background: #e6f0ff; }
+        .kpi-card:nth-child(2) .kpi-icon { background: #e6f9e6; }
+        .kpi-card:nth-child(3) .kpi-icon { background: #fff8e1; }
+        .kpi-card:nth-child(4) .kpi-icon { background: #ffe6e6; }
+        .kpi-value { font-size: 1.6rem; font-weight: 700; color: #004085; }
+        .kpi-card:nth-child(2) .kpi-value { color: #28A745; }
+        .kpi-card:nth-child(3) .kpi-value { color: #FF9800; }
+        .kpi-card:nth-child(4) .kpi-value { color: #DC3545; }
+        .kpi-label { font-size: 0.8rem; color: #666; }
+        
+        /* SEARCH & FILTERS */
+        .filters-container { display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; }
+        .search-input { padding: 10px 15px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 0.95rem; min-width: 250px; }
+        .search-input:focus { outline: none; border-color: #004085; }
+        .filter-select { padding: 10px 15px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 0.95rem; background: white; }
+        
+        /* TABS */
+        .tabs-container { margin-bottom: 20px; border-bottom: 2px solid #e0e0e0; }
+        .tabs { display: flex; gap: 5px; }
+        .tab { padding: 12px 20px; border: none; background: transparent; cursor: pointer; font-size: 0.95rem; border-bottom: 3px solid transparent; margin-bottom: -2px; }
+        .tab.active { color: #004085; border-bottom-color: #004085; font-weight: 600; }
+        .tab:hover { background: #f0f4f8; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        
+        /* TABLE */
+        .table-container { background: white; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); overflow-x: auto; }
+        .students-table { width: 100%; border-collapse: collapse; min-width: 1000px; }
+        .students-table thead { background: #004085; color: white; }
+        .students-table th, .students-table td { padding: 12px 10px; text-align: left; font-size: 0.9rem; }
+        .students-table tbody tr { border-bottom: 1px solid #e9ecef; }
+        .students-table tbody tr:hover { background: #f8f9fa; }
+        
+        /* BADGES */
+        .badge { padding: 3px 10px; border-radius: 10px; font-size: 0.75rem; font-weight: 600; }
+        .badge-active { background: #d4edda; color: #155724; }
+        .badge-inactive { background: #f8d7da; color: #721c24; }
+        .badge-graduate { background: #cce5ff; color: #004085; }
+        .badge-alert { background: #DC3545; color: white; }
+        .badge-ok { background: #28A745; color: white; }
+        
+        /* NOTES DISPLAY */
+        .notes-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+        .note-box { background: #f8f9fa; padding: 8px; border-radius: 6px; text-align: center; }
+        .note-box .module-name { font-size: 0.75rem; color: #666; margin-bottom: 4px; }
+        .note-box .note-value { font-size: 1.1rem; font-weight: 700; }
+        .note-box .note-value.pass { color: #28A745; }
+        .note-box .note-value.fail { color: #DC3545; }
+        
+        /* ACTION BUTTONS */
+        .btn-action { padding: 6px 12px; border: none; border-radius: 5px; cursor: pointer; font-size: 0.8rem; margin: 2px; }
+        .btn-view { background: #004085; color: white; }
+        .btn-view:hover { background: #003366; }
+        .btn-edit { background: #FFC107; color: #333; }
+        .btn-edit:hover { background: #e0a800; }
+        .btn-delete { background: #DC3545; color: white; }
+        .btn-delete:hover { background: #c82333; }
+        
+        /* DETAIL PANELS */
+        .detail-container { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .detail-panel { background: white; border-radius: 10px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); }
+        .detail-title { font-size: 1.1rem; font-weight: 600; color: #004085; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 2px solid #e9ecef; }
+        .detail-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f0f0f0; }
+        .detail-label { color: #666; font-size: 0.9rem; }
+        .detail-value { font-weight: 500; }
+        
+        /* MODULE GRADES */
+        .module-grades { margin-top: 15px; }
+        .module-card-grade { background: #f8f9fa; border-radius: 8px; padding: 15px; margin-bottom: 10px; border-left: 4px solid #004085; }
+        .module-card-grade.fail { border-left-color: #DC3545; }
+        .module-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .module-name { font-weight: 600; }
+        .module-note { font-size: 1.2rem; font-weight: 700; }
+        .module-note.pass { color: #28A745; }
+        .module-note.fail { color: #DC3545; }
+        .category-row { display: flex; justify-content: space-between; padding: 5px 0; font-size: 0.85rem; }
+        .category-name { color: #666; }
+        
+        /* ACTIVITIES LIST */
+        .activities-list { margin-top: 10px; padding-left: 15px; border-left: 2px solid #e0e0e0; }
+        .activity-item { display: flex; justify-content: space-between; padding: 4px 0; font-size: 0.8rem; color: #555; }
+        
+        /* PSICOLOGÍA */
+        .psicologia-header { background: #28a745; }
+        .psychology-layout-alerts, .psychology-layout-bitacoras { display: grid; grid-template-columns: 350px 1fr; gap: 20px; min-height: 500px; }
+        .panel-left-alerts, .panel-left-bitacoras { background: white; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); padding: 20px; }
+        .panel-right-alerts, .panel-right-bitacoras { background: white; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); padding: 25px; }
+        .panel-title { font-size: 1.1rem; color: #333; margin-bottom: 15px; font-weight: 600; }
+        .badge-count { background: #DC3545; color: white; padding: 2px 10px; border-radius: 12px; font-size: 0.8rem; margin-left: 8px; }
+        .alert-list { display: flex; flex-direction: column; gap: 8px; max-height: 500px; overflow-y: auto; }
+        .alert-item { display: flex; align-items: center; gap: 10px; padding: 12px; border-radius: 8px; cursor: pointer; transition: all 0.3s; border: 2px solid transparent; }
+        .alert-item:hover { background: #f0f4f8; border-color: #004085; }
+        .alert-item.selected { background: #004085; color: white; }
+        .alert-item .avatar { width: 35px; height: 35px; border-radius: 50%; background: #e9ecef; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.85rem; color: #004085; flex-shrink: 0; }
+        .alert-item.selected .avatar { background: white; color: #004085; }
+        .alert-item .info { flex: 1; min-width: 0; }
+        .alert-item .name { font-weight: 500; font-size: 0.9rem; }
+        .alert-item .detail { font-size: 0.75rem; color: #666; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .alert-item.selected .detail { color: #ccc; }
+        .no-alerts { color: #666; font-style: italic; text-align: center; padding: 40px; }
+        
+        /* DETALLE DE ALERTA */
+        .alert-detail-header { border-bottom: 2px solid #e9ecef; padding-bottom: 15px; margin-bottom: 20px; }
+        .alert-detail-header h3 { color: #004085; margin-bottom: 5px; }
+        .alert-detail-header .reason { color: #DC3545; font-style: italic; }
+        .detail-field { margin-bottom: 12px; }
+        .detail-field label { display: block; font-weight: 500; color: #666; font-size: 0.85rem; margin-bottom: 4px; }
+        .detail-field .value { color: #333; }
+        .rejection-reason { margin-top: 15px; }
+        .rejection-reason textarea { width: 100%; min-height: 80px; padding: 10px; border: 2px solid #e0e0e0; border-radius: 6px; font-family: inherit; resize: vertical; }
+        .rejection-reason textarea:focus { outline: none; border-color: #DC3545; }
+        .action-buttons-psych { display: flex; gap: 12px; margin-top: 20px; }
+        .btn-accept { background: #28a745; color: white; border: none; padding: 12px 25px; border-radius: 6px; font-size: 0.95rem; cursor: pointer; }
+        .btn-accept:hover { background: #218838; }
+        .btn-reject { background: white; color: #DC3545; border: 2px solid #DC3545; padding: 12px 25px; border-radius: 6px; font-size: 0.95rem; cursor: pointer; }
+        .btn-reject:hover { background: #DC3545; color: white; }
+        
+        /* BITÁCORA FORM */
+        .bitacora-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .bitacora-form-grid .full-width { grid-column: 1 / -1; }
+        .form-group-psych { margin-bottom: 12px; }
+        .form-group-psych label { display: block; font-weight: 500; color: #333; font-size: 0.9rem; margin-bottom: 5px; }
+        .form-group-psych input, .form-group-psych select, .form-group-psych textarea { width: 100%; padding: 10px; border: 2px solid #e0e0e0; border-radius: 6px; font-size: 0.9rem; }
+        .form-group-psych input:focus, .form-group-psych select:focus, .form-group-psych textarea:focus { outline: none; border-color: #28a745; }
+        .form-group-psych textarea { min-height: 100px; resize: vertical; font-family: inherit; }
+        
+        /* HISTORY CARD */
+        .history-card { background: white; border-radius: 10px; padding: 20px; margin-bottom: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); border-left: 4px solid #28a745; }
+        .history-card.resolved { border-left-color: #6c757d; opacity: 0.8; }
+        .history-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .history-name { font-weight: 600; color: #004085; font-size: 1.1rem; }
+        .history-date { font-size: 0.85rem; color: #666; }
+        .history-info { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; font-size: 0.9rem; }
+        .history-info .field { }
+        .history-info .field-label { color: #666; font-size: 0.8rem; }
+        .history-info .field-value { color: #333; font-weight: 500; }
+        .history-status { display: inline-block; padding: 3px 10px; border-radius: 10px; font-size: 0.75rem; font-weight: 600; }
+        .history-status.active { background: #d4edda; color: #155724; }
+        .history-status.resolved { background: #e2e3e5; color: #383d41; }
+        .timeline-entry { display: flex; gap: 12px; padding: 12px 0; border-bottom: 1px solid #e9ecef; }
+        .timeline-entry::before { content: ''; position: absolute; left: 12px; top: 40px; bottom: -12px; width: 2px; background: #e0e0e0; }
+        .timeline-icon { width: 26px; height: 26px; border-radius: 50%; background: #e6f0ff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .timeline-icon svg { width: 14px; height: 14px; fill: #004085; }
+        .timeline-content { flex: 1; }
+        .timeline-date { font-size: 0.8rem; color: #666; font-weight: 500; }
+        .timeline-text { color: #333; font-size: 0.9rem; }
+        .no-records { color: #666; font-style: italic; text-align: center; padding: 25px; }
+        
+        .btn-small { padding: 4px 8px; font-size: 0.75rem; border-radius: 4px; border: none; cursor: pointer; }
+        .btn-add-cat { background: #004085; color: white; }
+        .btn-add-cat:hover { background: #003366; }
+        .btn-remove { background: #DC3545; color: white; margin-left: 5px; }
+
+        /* ACCORDION STYLES */
+        .accordion-program, .accordion-student, .accordion-module { margin-bottom: 8px; border-radius: 8px; overflow: hidden; background: white; box-shadow: 0 1px 5px rgba(0,0,0,0.08); }
+        .accordion-header { display: flex; align-items: center; padding: 14px 18px; cursor: pointer; transition: background 0.2s; gap: 12px; user-select: none; }
+        .accordion-header:hover { background: #f0f4f8; }
+        .accordion-icon { font-size: 0.8rem; color: #666; transition: transform 0.3s; min-width: 16px; }
+        .accordion-title { font-weight: 600; font-size: 1rem; color: #004085; flex: 1; }
+        .accordion-count { font-size: 0.85rem; color: #666; background: #e9ecef; padding: 3px 10px; border-radius: 12px; }
+        .prog-header { background: linear-gradient(135deg, #004085, #003366); color: white; }
+        .prog-header:hover { background: linear-gradient(135deg, #003366, #002244); }
+        .prog-header .accordion-icon { color: rgba(255,255,255,0.8); }
+        .prog-header .accordion-title { color: white; }
+        .prog-header .accordion-count { background: rgba(255,255,255,0.2); color: white; }
+        .accordion-body { display: none; padding: 10px; background: #f8f9fa; }
+        .accordion-body.open { display: block; }
+        .student-name-acc { font-weight: 500; color: #333; flex: 1; }
+        .student-cedula { font-size: 0.85rem; color: #666; }
+        .student-avg { font-weight: 700; font-size: 1.1rem; padding: 2px 10px; border-radius: 6px; min-width: 45px; text-align: center; }
+        .student-avg.pass { color: #28A745; background: #e6f9e6; }
+        .student-avg.fail { color: #DC3545; background: #ffe6e6; }
+        .modules-body { padding-left: 20px; }
+        .module-header { background: white; border-left: 4px solid #004085; }
+        .module-header.pass { border-left-color: #28A745; }
+        .module-header.fail { border-left-color: #DC3545; }
+        .module-name-acc { font-weight: 500; color: #333; flex: 1; }
+        .module-avg-acc { font-weight: 700; font-size: 1rem; }
+        .module-avg-acc.pass { color: #28A745; }
+        .module-avg-acc.fail { color: #DC3545; }
+        .categories-body { padding-left: 20px; background: white; }
+        .category-section { padding: 10px 0; border-bottom: 1px solid #e9ecef; }
+        .category-section:last-child { border-bottom: none; }
+        .category-header { display: flex; align-items: center; gap: 10px; }
+        .cat-name { color: #666; font-size: 0.9rem; flex: 1; }
+        .cat-avg { font-weight: 600; color: #004085; }
+        .btn-remitir-small { background: #DC3545; color: white; border: none; padding: 4px 12px; border-radius: 4px; font-size: 0.75rem; cursor: pointer; white-space: nowrap; }
+        .btn-remitir-small:hover { background: #c82333; }
+        .low-grade { background: #fff3cd; border-left: 3px solid #FFC107; }
+
+        @media (max-width: 1200px) { .kpi-container { grid-template-columns: repeat(2, 1fr); } .detail-container { grid-template-columns: 1fr; } }
+        @media (max-width: 900px) { .psychology-layout { grid-template-columns: 1fr; } .notes-grid { grid-template-columns: repeat(2, 1fr); } }
+    </style>
+</head>
+<body>
+
+    <!-- HOME -->
+    <div id="view-home" class="view active">
+        <div class="home-hero">
+            <h1><i class="fas fa-graduation-cap"></i> Portal de Seguimiento de Becas</h1>
+            <p>Sistema de Acompañamiento Académico</p>
+            <div class="subtitle">Instituto Técnico José Mutis</div>
+        </div>
+        <main class="home-content">
+            <div class="role-section">
+                <h2>¿Qué rol deseas ingresar?</h2>
+                <p class="section-subtitle">Selecciona tu módulo para continuar</p>
+                
+                <div class="role-cards">
+                    <div class="role-card docente-role" onclick="UI.openLoginModal('docente')">
+                        <div class="card-icon"><i class="fas fa-chalkboard-teacher"></i></div>
+                        <h3>Módulo Docente</h3>
+                        <p>Gestiona becados, calificaciones y seguimiento académico de tus estudiantes.</p>
+                        <ul class="features">
+                            <li>Registrar y gestionar becados</li>
+                            <li>Ingresar calificaciones por módulo</li>
+                            <li>Generar alertas de bajo rendimiento</li>
+                            <li>Remitir estudiantes a psicología</li>
+                        </ul>
+                        <button class="btn-role" onclick="event.stopPropagation(); UI.openLoginModal('docente')">
+                            <i class="fas fa-sign-in-alt"></i> Ingresar como Docente
+                        </button>
+                    </div>
+                    
+                    <div class="role-card psicologia-role" onclick="UI.openLoginModal('psicologia')">
+                        <div class="card-icon"><i class="fas fa-brain"></i></div>
+                        <h3>Módulo Psicología</h3>
+                        <p>Atiende estudiantes remitidos, registra seguimientos y gestiona casos.</p>
+                        <ul class="features">
+                            <li>Recibir remisiones de docentes</li>
+                            <li>Aceptar o rechazar casos</li>
+                            <li>Registrar seguimientos y planes de acción</li>
+                            <li>Historial de casos atendidos</li>
+                        </ul>
+                        <button class="btn-role" onclick="event.stopPropagation(); UI.openLoginModal('psicologia')">
+                            <i class="fas fa-sign-in-alt"></i> Ingresar como Psicólogo
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="info-section">
+                    <div class="info-card">
+                        <div class="info-icon"><i class="fas fa-shield-alt"></i></div>
+                        <h4>Seguro y Confiable</h4>
+                        <p>Tus datos están protegidos y se sincronizan localmente de forma segura.</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-icon"><i class="fas fa-chart-bar"></i></div>
+                        <h4>Reportes Detallados</h4>
+                        <p>Visualiza el rendimiento académico y el progreso de cada becado.</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-icon"><i class="fas fa-users"></i></div>
+                        <h4>Gestión Colaborativa</h4>
+                        <p>Docentes y psicólogos trabajan juntos para el éxito de los estudiantes.</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <footer class="footer">
+            <p>&copy; 2024 Sistema de Acompañamiento de Becas (SAB) - Instituto Técnico José Mutis</p>
+            <div class="sync-info" id="syncInfoHome">Última sincronización: --</div>
+        </footer>
+    </div>
+
+    <!-- MODAL LOGIN -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content" style="max-width: 420px;">
+            <span class="close-modal" onclick="UI.closeLoginModal()">&times;</span>
+            <div class="modal-header" style="padding-bottom: 20px; border-bottom: 2px solid #e9ecef; margin-bottom: 25px;">
+                <div id="loginRoleIcon" style="width: 70px; height: 70px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; font-size: 1.8rem; color: white; background: #004085;">
+                    <i class="fas fa-user"></i>
+                </div>
+                <h2 id="modalTitle" style="color: #004085; font-size: 1.3rem;">Iniciar Sesión</h2>
+                <p id="loginRoleName" style="color: #666; font-size: 0.9rem; margin-top: 5px;">Ingresa tus credenciales</p>
+            </div>
+            <form id="loginForm" onsubmit="Auth.handleLogin(event)">
+                <div class="form-group">
+                    <label><i class="fas fa-user" style="margin-right: 5px; color: #004085;"></i> Usuario</label>
+                    <input type="text" id="username" placeholder="Ingresa tu usuario" required>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-lock" style="margin-right: 5px; color: #004085;"></i> Contraseña</label>
+                    <input type="password" id="password" placeholder="Ingresa tu contraseña" required>
+                </div>
+                <div id="loginError" class="error-message"><i class="fas fa-exclamation-circle"></i> Credenciales incorrectas</div>
+                <button type="submit" class="btn-submit" style="margin-top: 10px;">
+                    <i class="fas fa-sign-in-alt"></i> Ingresar
+                </button>
+            </form>
+            <div style="text-align: center; margin-top: 20px; padding-top: 15px; border-top: 1px solid #e9ecef;">
+                <a href="#" onclick="UI.closeLoginModal(); return false;" style="color: #004085; text-decoration: none; font-size: 0.9rem;">
+                    <i class="fas fa-arrow-left"></i> Volver al inicio
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL NEW STUDENT -->
+    <div id="studentModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="UI.closeStudentModal()">&times;</span>
+            <div class="modal-header"><h2 id="studentModalTitle">Nuevo Estudiante</h2></div>
+            <form id="studentForm" onsubmit="Docente.saveStudent(event)">
+                <input type="hidden" id="studentId">
+                <div class="form-row">
+                    <div class="form-group"><label>Cédula *</label><input type="text" id="cedula" required></div>
+                    <div class="form-group"><label>Celular</label><input type="tel" id="celular"></div>
+                </div>
+                <div class="form-group"><label>Nombres y Apellidos *</label><input type="text" id="nombreCompleto" required></div>
+                <div class="form-group"><label>Correo Electrónico *</label><input type="email" id="correo" required></div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Carrera/Programa *</label>
+                        <select id="carrera" required>
+                            <option value="">Seleccione...</option>
+                            <option value="Técnico Laboral en Soporte, Sistemas e Informática">Técnico Laboral en Soporte, Sistemas e Informática</option>
+                            <option value="Técnico Laboral en Auxiliar Contable y Administrativo">Técnico Laboral en Auxiliar Contable y Administrativo</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Estado *</label>
+                        <select id="estadoEstudiante" required>
+                            <option value="Activo">Activo</option>
+                            <option value="Inactivo">Inactivo</option>
+                            <option value="Graduado">Graduado</option>
+                        </select>
+                    </div>
+                </div>
+                <button type="submit" class="btn-submit"><i class="fas fa-save"></i> Guardar Estudiante</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL VIEW STUDENT -->
+    <div id="viewStudentModal" class="modal">
+        <div class="modal-content" style="max-width: 800px;">
+            <span class="close-modal" onclick="UI.closeViewStudentModal()">&times;</span>
+            <div id="studentDetailContent"></div>
+        </div>
+    </div>
+
+    <!-- MODAL ADD ACTIVITY -->
+    <div id="activityModal" class="modal">
+        <div class="modal-content" style="max-width: 400px;">
+            <span class="close-modal" onclick="UI.closeActivityModal()">&times;</span>
+            <div class="modal-header"><h2>Agregar Actividad</h2></div>
+            <div class="form-group"><label>Nombre de la Actividad</label><input type="text" id="activityName" placeholder="Ej: Examen Parcial"></div>
+            <div class="form-group"><label>Nota (1.0 - 5.0)</label><input type="number" id="activityValue" min="1.0" max="5.0" step="0.1"></div>
+            <div style="display:flex;gap:10px;margin-top:20px;">
+                <button class="btn-guardar" onclick="Docente.saveActivity()"><i class="fas fa-save"></i> Guardar</button>
+                <button class="btn-resolver" onclick="UI.closeActivityModal()"><i class="fas fa-times"></i> Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- DOCENTE -->
+    <div id="view-docente" class="view">
+        <div class="dashboard-header">
+            <h1>Portal de Seguimiento de Becas</h1>
+            <div class="header-actions">
+                <button class="btn-nuevo" onclick="UI.openNewStudentModal()"><i class="fas fa-plus"></i> Nuevo Estudiante</button>
+                <button class="btn-logout" onclick="Auth.logout()"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</button>
+            </div>
+        </div>
+        <div class="breadcrumbs"><a href="#" onclick="changeView('view-home'); return false;">Inicio</a><span class="sep">></span><span>Módulo Docente</span></div>
+        <div class="dashboard-content">
+            <div class="kpi-container">
+                <div class="kpi-card"><div class="kpi-icon"><i class="fas fa-user-graduate"></i></div><div><div class="kpi-value" id="kpiTotal">0</div><div class="kpi-label">Becados Totales</div></div></div>
+                <div class="kpi-card"><div class="kpi-icon"><i class="fas fa-check-circle"></i></div><div><div class="kpi-value" id="kpiActivos">0</div><div class="kpi-label">Activos</div></div></div>
+                <div class="kpi-card"><div class="kpi-icon"><i class="fas fa-exclamation-triangle"></i></div><div><div class="kpi-value" id="kpiAlertas">0</div><div class="kpi-label">Alertas Activas</div></div></div>
+                <div class="kpi-card"><div class="kpi-icon"><i class="fas fa-chart-line"></i></div><div><div class="kpi-value" id="kpiPromedio">0.0</div><div class="kpi-label">Promedio General</div></div></div>
+            </div>
+
+            <div class="tabs-container">
+                <div class="tabs">
+                    <button class="tab active" onclick="Docente.switchTab('lista')">Lista de Estudiantes</button>
+                    <button class="tab" onclick="Docente.switchTab('calificaciones')">Calificaciones por Módulo</button>
+                </div>
+            </div>
+
+            <div id="tab-lista" class="tab-content active">
+                <div class="filters-container">
+                    <input type="text" id="searchInput" class="search-input" placeholder="Buscar por nombre, cédula o carrera..." oninput="Docente.filterStudents()">
+                    <select id="filterCarrera" class="filter-select" onchange="Docente.filterStudents()">
+                        <option value="">Todos los programas</option>
+                        <option value="Técnico Laboral en Soporte, Sistemas e Informática">Técnico en Soporte, Sistemas e Informática</option>
+                        <option value="Técnico Laboral en Auxiliar Contable y Administrativo">Técnico en Auxiliar Contable y Administrativo</option>
+                    </select>
+                    <select id="filterEstado" class="filter-select" onchange="Docente.filterStudents()">
+                        <option value="">Todos los estados</option>
+                        <option value="Activo">Activo</option>
+                        <option value="Inactivo">Inactivo</option>
+                        <option value="Graduado">Graduado</option>
+                    </select>
+                </div>
+                <div class="table-container">
+                    <table class="students-table">
+                        <thead><tr><th>Cédula</th><th>Nombre</th><th>Carrera</th><th>Estado</th><th>Promedio</th><th>Acciones</th></tr></thead>
+                        <tbody id="studentsTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="tab-calificaciones" class="tab-content">
+                <div class="filters-container">
+                    <select id="filterModulo" class="filter-select" onchange="Docente.renderCalificaciones()">
+                        <option value="">Todos los programas</option>
+                        <option value="Técnico Laboral en Soporte, Sistemas e Informática">Técnico en Soporte, Sistemas e Informática</option>
+                        <option value="Técnico Laboral en Auxiliar Contable y Administrativo">Técnico en Auxiliar Contable y Administrativo</option>
+                    </select>
+                </div>
+                <div id="calificacionesContent"></div>
+            </div>
+        </div>
+        <footer class="footer">
+            <p>&copy; 2024 Sistema de Acompañamiento de Becas (SAB)</p>
+            <div class="sync-info" id="syncInfoDocente">Última sincronización: --</div>
+        </footer>
+    </div>
+
+    <!-- PSICOLOGÍA -->
+    <div id="view-psicologia" class="view">
+        <div class="dashboard-header psicologia-header">
+            <h1>Portal de Seguimiento de Becas</h1>
+            <button class="btn-logout" onclick="Auth.logout()"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</button>
+        </div>
+        <div class="breadcrumbs"><a href="#" onclick="changeView('view-home'); return false;">Inicio</a><span class="sep">></span><span>Módulo Psicología</span></div>
+        <div class="dashboard-content">
+            <div class="tabs-container">
+                <div class="tabs">
+                    <button class="tab active" onclick="Psicologia.switchTab('inicio')">Inicio</button>
+                    <button class="tab" onclick="Psicologia.switchTab('alertas')">Estudiantes en Alerta <span class="badge-count" id="alertBadge">0</span></button>
+                    <button class="tab" onclick="Psicologia.switchTab('bitacoras')">Bitácoras</button>
+                </div>
+            </div>
+
+            <!-- TAB INICIO -->
+            <div id="tab-inicio" class="tab-content active">
+                <h2 style="color:#004085;margin-bottom:20px;">Historial de Estudiantes Aceptados</h2>
+                <div id="historyContainer"><p style="color:#666;text-align:center;padding:40px;">No hay estudiantes aceptados aún</p></div>
+            </div>
+
+            <!-- TAB ALERTAS -->
+            <div id="tab-alertas" class="tab-content">
+                <div class="psychology-layout-alerts">
+                    <div class="panel-left-alerts">
+                        <h2 class="panel-title">Estudiantes Remitidos</h2>
+                        <div id="alertList" class="alert-list"><p class="no-alerts">No hay estudiantes remitidos</p></div>
+                    </div>
+                    <div class="panel-right-alerts" id="alertDetailPanel" style="display:none;">
+                        <div id="alertDetailContent"></div>
+                    </div>
+                    <div class="panel-right-alerts" id="noAlertSelected">
+                        <p style="color:#666;text-align:center;padding:60px;">Seleccione un estudiante para ver los detalles de la remisión</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB BITÁCORAS -->
+            <div id="tab-bitacoras" class="tab-content">
+                <div class="psychology-layout-bitacoras">
+                    <div class="panel-left-bitacoras">
+                        <h2 class="panel-title">Estudiantes Aceptados</h2>
+                        <div id="acceptedList" class="alert-list"><p class="no-alerts">No hay estudiantes aceptados</p></div>
+                    </div>
+                    <div class="panel-right-bitacoras" id="bitacoraPanel" style="display:none;">
+                        <div id="bitacoraContent"></div>
+                    </div>
+                    <div class="panel-right-bitacoras" id="noBitacoraSelected">
+                        <p style="color:#666;text-align:center;padding:60px;">Seleccione un estudiante para registrar seguimiento</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer class="footer">
+            <p>&copy; 2024 Sistema de Acompañamiento de Becas (SAB)</p>
+            <div class="sync-info" id="syncInfoPsicologia">Última sincronización: --</div>
+        </footer>
+    </div>
+
+<script>
+// ==========================================
+// CONFIGURACIÓN
+// ==========================================
+var CONFIG = {
+    PROGRAMAS: {
+        'Técnico Laboral en Soporte, Sistemas e Informática': {
+            modulos: ['Base de Datos', 'Ofimática', 'Inglés', 'Lógica de Programación']
+        },
+        'Técnico Laboral en Auxiliar Contable y Administrativo': {
+            modulos: ['Contabilidad General', 'Costos y Presupuestos', 'Administración de Empresas', 'Normativa Tributaria', 'Ofimática Avanzada', 'Legislación Laboral']
+        }
+    },
+    CATEGORIAS: [
+        { nombre: 'Desempeño', porcentaje: 0.40 },
+        { nombre: 'Conocimiento', porcentaje: 0.20 },
+        { nombre: 'Producto', porcentaje: 0.40 }
+    ],
+    NOTA_APROBACION: 3.8
+};
+
+// ==========================================
+// DATA MODULE
+// ==========================================
+var Data = {
+    KEY: 'sab_students',
+    STATE_KEY: 'sab_state',
+    _cache: null,
+
+    _ensureInit: function() {
+        var d = localStorage.getItem(this.KEY);
+        if (!d) {
+            var initial = this._getDefaultData();
+            localStorage.setItem(this.KEY, JSON.stringify(initial));
+            this._cache = initial;
+        } else {
+            // Validar estructura de datos
+            var parsed = JSON.parse(d);
+            if (parsed.length > 0 && !parsed[0].modulos) {
+                // Estructura antigua, reinicializar
+                var initial = this._getDefaultData();
+                localStorage.setItem(this.KEY, JSON.stringify(initial));
+                this._cache = initial;
+            } else {
+                this._cache = parsed;
+            }
+        }
+    },
+
+    getAll: function() {
+        if (!this._cache) this._ensureInit();
+        return this._cache;
+    },
+
+    save: function(students) {
+        this._cache = students;
+        localStorage.setItem(this.KEY, JSON.stringify(students));
+        this.updateSync();
+    },
+
+    getById: function(id) {
+        return this.getAll().find(function(s) { return s.id === id; });
+    },
+
+    update: function(id, updates) {
+        var s = this.getAll();
+        for (var i = 0; i < s.length; i++) {
+            if (s[i].id === id) { Object.assign(s[i], updates); break; }
+        }
+        this.save(s);
+    },
+
+    add: function(studentData) {
+        var s = this.getAll();
+        var newStudent = {
+            id: Date.now(),
+            cedula: studentData.cedula || '',
+            nombre: studentData.nombre || '',
+            correo: studentData.correo || '',
+            celular: studentData.celular || '',
+            carrera: studentData.carrera || '',
+            estado: studentData.estado || 'Activo',
+            estadoAlerta: false,
+            modulos: this.createEmptyModules(studentData.carrera),
+            bitacoras: [],
+            historialAlertas: []
+        };
+        s.push(newStudent);
+        this.save(s);
+        return newStudent;
+    },
+
+    delete: function(id) {
+        var s = this.getAll().filter(function(x) { return x.id !== id; });
+        this.save(s);
+    },
+
+    getAlerts: function() {
+        return this.getAll().filter(function(s) { return s.estadoAlerta === true; });
+    },
+
+    createEmptyModules: function(programa) {
+        var modulos = {};
+        var mods = CONFIG.PROGRAMAS[programa] ? CONFIG.PROGRAMAS[programa].modulos : [];
+        CONFIG.CATEGORIAS.forEach(function(c) {
+            mods.forEach(function(m) {
+                if (!modulos[m]) modulos[m] = {};
+                modulos[m][c.nombre] = [];
+            });
+        });
+        return modulos;
+    },
+
+    calculateModuleAverage: function(modulo) {
+        if (!modulo) return null;
+        var total = 0, count = 0;
+        CONFIG.CATEGORIAS.forEach(function(cat) {
+            var acts = modulo[cat.nombre] || [];
+            if (acts.length > 0) {
+                var sum = acts.reduce(function(a, b) { return a + b.valor; }, 0);
+                total += (sum / acts.length) * cat.porcentaje;
+                count += cat.porcentaje;
+            }
+        });
+        return count > 0 ? Math.round((total / count) * 10) / 10 : null;
+    },
+
+    calculateGlobalAverage: function(student) {
+        if (!student || !student.modulos) return null;
+        var total = 0, count = 0;
+        var modulos = CONFIG.PROGRAMAS[student.carrera] ? CONFIG.PROGRAMAS[student.carrera].modulos : [];
+        modulos.forEach(function(m) {
+            var avg = Data.calculateModuleAverage(student.modulos[m]);
+            if (avg !== null) { total += avg; count++; }
+        });
+        return count > 0 ? Math.round((total / count) * 10) / 10 : null;
+    },
+
+    updateSync: function() {
+        var now = new Date().toLocaleString('es-CO');
+        localStorage.setItem(this.STATE_KEY, JSON.stringify({ lastSync: now }));
+        document.querySelectorAll('[id^="syncInfo"]').forEach(function(el) {
+            el.textContent = 'Última sincronización: ' + now;
+        });
+    },
+
+    getLastSync: function() {
+        try { return JSON.parse(localStorage.getItem(this.STATE_KEY)).lastSync || '--'; }
+        catch(e) { return '--'; }
+    },
+
+    _getDefaultData: function() {
+        var emSistemas = this.createEmptyModules('Técnico Laboral en Soporte, Sistemas e Informática');
+        var emContable = this.createEmptyModules('Técnico Laboral en Auxiliar Contable y Administrativo');
+        return [
+            { id: 1, cedula: '1012345678', nombre: 'Juan Pérez', correo: 'juan@email.com', celular: '3001234567', carrera: 'Técnico Laboral en Soporte, Sistemas e Informática', estado: 'Activo', estadoAlerta: false, modulos: JSON.parse(JSON.stringify(emSistemas)), bitacoras: [], historialAlertas: [] },
+            { id: 2, cedula: '1023456789', nombre: 'María López', correo: 'maria@email.com', celular: '3012345678', carrera: 'Técnico Laboral en Soporte, Sistemas e Informática', estado: 'Activo', estadoAlerta: false, modulos: JSON.parse(JSON.stringify(emSistemas)), bitacoras: [], historialAlertas: [] },
+            { id: 3, cedula: '1034567890', nombre: 'Carlos Ruiz', correo: 'carlos@email.com', celular: '3023456789', carrera: 'Técnico Laboral en Auxiliar Contable y Administrativo', estado: 'Activo', estadoAlerta: false, modulos: JSON.parse(JSON.stringify(emContable)), bitacoras: [], historialAlertas: [] },
+            { id: 4, cedula: '1045678901', nombre: 'Ana Martínez', correo: 'ana@email.com', celular: '3034567890', carrera: 'Técnico Laboral en Soporte, Sistemas e Informática', estado: 'Activo', estadoAlerta: false, modulos: JSON.parse(JSON.stringify(emSistemas)), bitacoras: [], historialAlertas: [] },
+            { id: 5, cedula: '1056789012', nombre: 'Pedro Sánchez', correo: 'pedro@email.com', celular: '3045678901', carrera: 'Técnico Laboral en Auxiliar Contable y Administrativo', estado: 'Activo', estadoAlerta: false, modulos: JSON.parse(JSON.stringify(emContable)), bitacoras: [], historialAlertas: [] }
+        ];
+    }
+};
+
+// ==========================================
+// AUTH MODULE
+// ==========================================
+var Auth = {
+    CREDS: { docente: { u: 'docente_becas', p: 'becas2024' }, psicologia: { u: 'psicologo_becas', p: 'becas2024' } },
+    role: null,
+
+    handleLogin: function(e) {
+        e.preventDefault();
+        var u = document.getElementById('username').value.trim();
+        var p = document.getElementById('password').value.trim();
+        var c = this.CREDS[this.role];
+        if (u === c.u && p === c.p) {
+            var r = this.role;
+            UI.closeLoginModal();
+            changeView('view-' + r);
+            Data.updateSync();
+            if (r === 'docente') Docente.init();
+            else Psicologia.init();
+        } else {
+            document.getElementById('loginError').style.display = 'block';
+            document.getElementById('password').value = '';
+        }
+    },
+
+    logout: function() { changeView('view-home'); }
+};
+
+// ==========================================
+// UI MODULE
+// ==========================================
+var UI = {
+    openLoginModal: function(role) {
+        Auth.role = role;
+        var isDocente = role === 'docente';
+        document.getElementById('modalTitle').textContent = 'Login - Módulo ' + (isDocente ? 'Docente' : 'Psicología');
+        document.getElementById('loginRoleName').textContent = isDocente ? 'Acceso para docentes del instituto' : 'Acceso para profesionales de psicología';
+        var iconEl = document.getElementById('loginRoleIcon');
+        iconEl.innerHTML = isDocente ? '<i class="fas fa-chalkboard-teacher"></i>' : '<i class="fas fa-brain"></i>';
+        iconEl.style.background = isDocente ? '#004085' : '#28a745';
+        document.getElementById('loginForm').reset();
+        document.getElementById('loginError').style.display = 'none';
+        document.getElementById('loginModal').classList.add('active');
+    },
+    closeLoginModal: function() { document.getElementById('loginModal').classList.remove('active'); Auth.role = null; },
+
+    openNewStudentModal: function(student) {
+        document.getElementById('studentForm').reset();
+        document.getElementById('studentId').value = student ? student.id : '';
+        document.getElementById('studentModalTitle').textContent = student ? 'Editar Estudiante' : 'Nuevo Estudiante';
+        if (student) {
+            document.getElementById('cedula').value = student.cedula;
+            document.getElementById('nombreCompleto').value = student.nombre;
+            document.getElementById('correo').value = student.correo;
+            document.getElementById('celular').value = student.celular || '';
+            document.getElementById('carrera').value = student.carrera;
+            document.getElementById('estadoEstudiante').value = student.estado;
+        }
+        document.getElementById('studentModal').classList.add('active');
+    },
+    closeStudentModal: function() { document.getElementById('studentModal').classList.remove('active'); },
+
+    openViewStudentModal: function(student) {
+        var avg = Data.calculateGlobalAverage(student);
+        var html = '<h2 style="color:#004085;margin-bottom:20px;">Detalle del Estudiante</h2>';
+        html += '<div class="detail-row"><span class="detail-label">Cédula:</span><span class="detail-value">' + student.cedula + '</span></div>';
+        html += '<div class="detail-row"><span class="detail-label">Nombre:</span><span class="detail-value">' + student.nombre + '</span></div>';
+        html += '<div class="detail-row"><span class="detail-label">Correo:</span><span class="detail-value">' + student.correo + '</span></div>';
+        html += '<div class="detail-row"><span class="detail-label">Celular:</span><span class="detail-value">' + (student.celular || '-') + '</span></div>';
+        html += '<div class="detail-row"><span class="detail-label">Carrera:</span><span class="detail-value">' + student.carrera + '</span></div>';
+        html += '<div class="detail-row"><span class="detail-label">Estado:</span><span class="detail-value"><span class="badge badge-' + (student.estado === 'Activo' ? 'active' : student.estado === 'Inactivo' ? 'inactive' : 'graduate') + '">' + student.estado + '</span></span></div>';
+        html += '<div class="detail-row"><span class="detail-label">Promedio General:</span><span class="detail-value" style="font-size:1.2rem;font-weight:700;color:' + (avg >= CONFIG.NOTA_APROBACION ? '#28A745' : '#DC3545') + ';">' + (avg || '-') + '</span></div>';
+        
+        html += '<h3 style="margin-top:20px;margin-bottom:15px;color:#004085;">Calificaciones por Módulo</h3>';
+        var modulos = CONFIG.PROGRAMAS[student.carrera] ? CONFIG.PROGRAMAS[student.carrera].modulos : [];
+        modulos.forEach(function(m) {
+            var mAvg = Data.calculateModuleAverage(student.modulos[m]);
+            var status = mAvg !== null ? (mAvg >= CONFIG.NOTA_APROBACION ? 'pass' : 'fail') : '';
+            html += '<div class="module-card-grade ' + status + '">';
+            html += '<div class="module-header"><span class="module-name">' + m + '</span><span class="module-note ' + status + '">' + (mAvg !== null ? mAvg : '-') + '</span></div>';
+            CONFIG.CATEGORIAS.forEach(function(c) {
+                var acts = student.modulos[m][c.nombre] || [];
+                var catAvg = acts.length > 0 ? (acts.reduce(function(a, b) { return a + b.valor; }, 0) / acts.length).toFixed(1) : '-';
+                html += '<div class="category-row"><span class="category-name">' + c.nombre + ' (' + (c.porcentaje * 100) + '%)</span><span>' + catAvg + '</span></div>';
+                if (acts.length > 0) {
+                    html += '<div class="activities-list">';
+                    acts.forEach(function(a) { html += '<div class="activity-item"><span>' + a.nombreActividad + '</span><span>' + a.valor + '</span></div>'; });
+                    html += '</div>';
+                }
+            });
+            html += '</div>';
+        });
+        
+        document.getElementById('studentDetailContent').innerHTML = html;
+        document.getElementById('viewStudentModal').classList.add('active');
+    },
+    closeViewStudentModal: function() { document.getElementById('viewStudentModal').classList.remove('active'); },
+
+    openActivityModal: function(moduleName, category, studentId) {
+        Docente.currentModule = moduleName;
+        Docente.currentCategory = category;
+        Docente.currentStudentId = studentId;
+        document.getElementById('activityName').value = '';
+        document.getElementById('activityValue').value = '';
+        document.getElementById('activityModal').classList.add('active');
+    },
+    closeActivityModal: function() { document.getElementById('activityModal').classList.remove('active'); }
+};
+
+// ==========================================
+// DOCENTE MODULE
+// ==========================================
+var Docente = {
+    currentModule: null,
+    currentCategory: null,
+    currentStudentId: null,
+
+    init: function() {
+        this.renderTable();
+        this.renderCalificaciones();
+        this.updateKPIs();
+    },
+
+    switchTab: function(tab) {
+        document.querySelectorAll('.tab').forEach(function(t) { t.classList.remove('active'); });
+        document.querySelectorAll('.tab-content').forEach(function(c) { c.classList.remove('active'); });
+        event.target.classList.add('active');
+        document.getElementById('tab-' + tab).classList.add('active');
+    },
+
+    renderTable: function() {
+        var students = Data.getAll();
+        var search = (document.getElementById('searchInput').value || '').toLowerCase();
+        var carrera = document.getElementById('filterCarrera').value;
+        var estado = document.getElementById('filterEstado').value;
+        
+        var filtered = students.filter(function(s) {
+            var matchSearch = !search || s.nombre.toLowerCase().indexOf(search) !== -1 || s.cedula.indexOf(search) !== -1 || s.carrera.toLowerCase().indexOf(search) !== -1;
+            var matchCarrera = !carrera || s.carrera === carrera;
+            var matchEstado = !estado || s.estado === estado;
+            return matchSearch && matchCarrera && matchEstado;
+        });
+        
+        var tbody = document.getElementById('studentsTableBody');
+        var html = '';
+        filtered.forEach(function(s) {
+            var avg = Data.calculateGlobalAverage(s);
+            var estadoClass = s.estado === 'Activo' ? 'active' : s.estado === 'Inactivo' ? 'inactive' : 'graduate';
+            html += '<tr>';
+            html += '<td>' + s.cedula + '</td>';
+            html += '<td>' + s.nombre + (s.estadoAlerta ? ' <span class="badge badge-alert">Alerta</span>' : '') + '</td>';
+            html += '<td style="font-size:0.85rem;">' + s.carrera + '</td>';
+            html += '<td><span class="badge badge-' + estadoClass + '">' + s.estado + '</span></td>';
+            html += '<td style="font-weight:700;color:' + (avg >= CONFIG.NOTA_APROBACION ? '#28A745' : '#DC3545') + ';">' + (avg || '-') + '</td>';
+            html += '<td>';
+            html += '<button class="btn-action btn-view" onclick="UI.openViewStudentModal(Data.getById(' + s.id + '))"><i class="fas fa-eye"></i></button> ';
+            html += '<button class="btn-action btn-edit" onclick="UI.openNewStudentModal(Data.getById(' + s.id + '))"><i class="fas fa-edit"></i></button> ';
+            html += '<button class="btn-action btn-delete" onclick="Docente.deleteStudent(' + s.id + ')"><i class="fas fa-trash"></i></button>';
+            html += '</td></tr>';
+        });
+        tbody.innerHTML = html || '<tr><td colspan="6" style="text-align:center;padding:30px;color:#666;">No se encontraron estudiantes</td></tr>';
+        this.updateKPIs();
+    },
+
+    filterStudents: function() { this.renderTable(); },
+
+    saveStudent: function(e) {
+        e.preventDefault();
+        var id = document.getElementById('studentId').value;
+        var data = {
+            cedula: document.getElementById('cedula').value.trim(),
+            nombre: document.getElementById('nombreCompleto').value.trim(),
+            correo: document.getElementById('correo').value.trim(),
+            celular: document.getElementById('celular').value.trim(),
+            carrera: document.getElementById('carrera').value,
+            estado: document.getElementById('estadoEstudiante').value
+        };
+
+        if (id && id !== '') {
+            Data.update(parseInt(id), data);
+        } else {
+            var newStudent = Data.add(data);
+        }
+
+        UI.closeStudentModal();
+        this.renderTable();
+        this.renderCalificaciones();
+        this.updateKPIs();
+    },
+
+    deleteStudent: function(id) {
+        if (confirm('¿Está seguro de eliminar este estudiante?')) {
+            Data.delete(id);
+            this.renderTable();
+            this.renderCalificaciones();
+        }
+    },
+
+    renderCalificaciones: function() {
+        var openState = this.saveAccordionState();
+        var students = Data.getAll();
+        var programaFilter = document.getElementById('filterModulo').value;
+        var container = document.getElementById('calificacionesContent');
+        
+        var grouped = {};
+        students.forEach(function(s) {
+            if (s.estado !== 'Activo') return;
+            if (programaFilter && s.carrera !== programaFilter) return;
+            if (!grouped[s.carrera]) grouped[s.carrera] = [];
+            grouped[s.carrera].push(s);
+        });
+        
+        var html = '';
+        var progIndex = 0;
+        
+        Object.keys(grouped).forEach(function(prog) {
+            progIndex++;
+            var studentsProg = grouped[prog];
+            var modulos = CONFIG.PROGRAMAS[prog] ? CONFIG.PROGRAMAS[prog].modulos : [];
+            
+            html += '<div class="accordion-program">';
+            html += '<div class="accordion-header prog-header" onclick="Docente.toggleAccordion(\'prog-' + progIndex + '\')">';
+            html += '<span class="accordion-icon" id="icon-prog-' + progIndex + '">▶</span>';
+            html += '<span class="accordion-title">' + prog + '</span>';
+            html += '<span class="accordion-count">' + studentsProg.length + ' estudiantes</span>';
+            html += '</div>';
+            html += '<div class="accordion-body" id="prog-' + progIndex + '">';
+            
+            studentsProg.forEach(function(s, sIdx) {
+                var avg = Data.calculateGlobalAverage(s);
+                var avgClass = avg !== null ? (avg >= CONFIG.NOTA_APROBACION ? 'pass' : 'fail') : '';
+                var studentProgIdx = progIndex + '-' + (sIdx + 1);
+                var canRemit = Docente.hasLowGrade(s) && !s.estadoAlerta;
+                
+                html += '<div class="accordion-student">';
+                html += '<div class="accordion-header student-header" onclick="Docente.toggleAccordion(\'stu-' + studentProgIdx + '\')">';
+                html += '<span class="accordion-icon" id="icon-stu-' + studentProgIdx + '">▶</span>';
+                html += '<span class="student-name-acc">' + s.nombre + '</span>';
+                html += '<span class="student-cedula">(' + s.cedula + ')</span>';
+                html += '<span class="student-avg ' + avgClass + '">' + (avg !== null ? avg : '-') + '</span>';
+                if (s.estadoAlerta) {
+                    html += '<span class="badge badge-alert">En Alerta</span>';
+                } else if (canRemit) {
+                    html += '<button class="btn-remitir-small" onclick="event.stopPropagation(); Docente.remitirPsicologia(' + s.id + ')"><i class="fas fa-paper-plane"></i> Remitir a Psicología</button>';
+                }
+                html += '</div>';
+                html += '<div class="accordion-body modules-body" id="stu-' + studentProgIdx + '">';
+                
+                modulos.forEach(function(m, mIdx) {
+                    var mAvg = Data.calculateModuleAverage(s.modulos[m]);
+                    var mStatus = mAvg !== null ? (mAvg >= CONFIG.NOTA_APROBACION ? 'pass' : 'fail') : '';
+                    var modIdx = studentProgIdx + '-' + (mIdx + 1);
+                    var moduleHasLow = mAvg !== null && mAvg < 3.5 && !s.estadoAlerta;
+                    
+                    html += '<div class="accordion-module">';
+                    html += '<div class="accordion-header module-header ' + mStatus + '" onclick="Docente.toggleAccordion(\'mod-' + modIdx + '\')">';
+                    html += '<span class="accordion-icon" id="icon-mod-' + modIdx + '">▶</span>';
+                    html += '<span class="module-name-acc">' + m + '</span>';
+                    html += '<span class="module-avg-acc ' + mStatus + '">' + (mAvg !== null ? mAvg : '-') + '</span>';
+                    if (moduleHasLow) {
+                        html += '<button class="btn-remitir-small" onclick="event.stopPropagation(); Docente.remitirPsicologia(' + s.id + ')"><i class="fas fa-paper-plane"></i> Remitir</button>';
+                    }
+                    html += '</div>';
+                    html += '<div class="accordion-body categories-body" id="mod-' + modIdx + '">';
+                    
+                    CONFIG.CATEGORIAS.forEach(function(c) {
+                        var acts = s.modulos[m][c.nombre] || [];
+                        var catAvg = acts.length > 0 ? (acts.reduce(function(a, b) { return a + b.valor; }, 0) / acts.length).toFixed(1) : '-';
+                        
+                        html += '<div class="category-section">';
+                        html += '<div class="category-header">';
+                        html += '<span class="cat-name">' + c.nombre + ' (' + (c.porcentaje * 100) + '%)</span>';
+                        html += '<span class="cat-avg">' + catAvg + '</span>';
+                        html += '<button class="btn-small btn-add-cat" onclick="UI.openActivityModal(\'' + m + '\', \'' + c.nombre + '\', ' + s.id + ')">+ Agregar</button>';
+                        html += '</div>';
+                        
+                        if (acts.length > 0) {
+                            html += '<div class="activities-list">';
+                            acts.forEach(function(a, idx) {
+                                var lowClass = a.valor < 3.5 ? 'low-grade' : '';
+                                html += '<div class="activity-item ' + lowClass + '">';
+                                html += '<span>' + a.nombreActividad + ': <strong>' + a.valor + '</strong></span>';
+                                html += '<button class="btn-small btn-remove" onclick="Docente.removeActivity(' + s.id + ', \'' + m + '\', \'' + c.nombre + '\', ' + idx + ')">×</button>';
+                                html += '</div>';
+                            });
+                            html += '</div>';
+                        }
+                        html += '</div>';
+                    });
+                    
+                    html += '</div></div>';
+                });
+                
+                html += '</div></div>';
+            });
+            
+            html += '</div></div>';
+        });
+        
+        container.innerHTML = html || '<p style="text-align:center;color:#666;padding:40px;">No hay estudiantes activos en este programa</p>';
+        this.restoreAccordionState(openState);
+    },
+
+    toggleAccordion: function(id) {
+        var body = document.getElementById(id);
+        var icon = document.getElementById('icon-' + id);
+        if (body.classList.contains('open')) {
+            body.classList.remove('open');
+            if (icon) icon.textContent = '▶';
+        } else {
+            body.classList.add('open');
+            if (icon) icon.textContent = '▼';
+        }
+    },
+
+    saveAccordionState: function() {
+        var state = [];
+        document.querySelectorAll('.accordion-body.open').forEach(function(el) {
+            state.push(el.id);
+        });
+        return state;
+    },
+
+    restoreAccordionState: function(state) {
+        if (!state) return;
+        state.forEach(function(id) {
+            var body = document.getElementById(id);
+            var icon = document.getElementById('icon-' + id);
+            if (body) {
+                body.classList.add('open');
+                if (icon) icon.textContent = '▼';
+            }
+        });
+    },
+
+    hasLowGrade: function(student) {
+        if (!student || !student.modulos) return false;
+        var modulos = CONFIG.PROGRAMAS[student.carrera] ? CONFIG.PROGRAMAS[student.carrera].modulos : [];
+        for (var i = 0; i < modulos.length; i++) {
+            var modulo = student.modulos[modulos[i]];
+            if (!modulo) continue;
+            for (var j = 0; j < CONFIG.CATEGORIAS.length; j++) {
+                var acts = modulo[CONFIG.CATEGORIAS[j].nombre] || [];
+                for (var k = 0; k < acts.length; k++) {
+                    if (acts[k].valor < 3.5) return true;
+                }
+            }
+        }
+        return false;
+    },
+
+    saveActivity: function() {
+        var name = document.getElementById('activityName').value.trim();
+        var value = parseFloat(document.getElementById('activityValue').value);
+        if (!name) { alert('Ingrese el nombre'); return; }
+        if (isNaN(value) || value < 1.0 || value > 5.0) { alert('Nota inválida (1.0 - 5.0)'); return; }
+        
+        // Save current accordion state
+        var openState = this.saveAccordionState();
+        
+        var students = Data.getAll();
+        for (var i = 0; i < students.length; i++) {
+            if (students[i].id === this.currentStudentId) {
+                students[i].modulos[this.currentModule][this.currentCategory].push({ 
+                    nombreActividad: name, 
+                    valor: Math.round(value * 10) / 10 
+                });
+                Data.save(students);
+                break;
+            }
+        }
+        UI.closeActivityModal();
+        this.renderCalificaciones();
+        this.renderTable();
+        this.updateKPIs();
+        
+        // Restore accordion state after render
+        var self = this;
+        setTimeout(function() { self.restoreAccordionState(openState); }, 50);
+    },
+
+    removeActivity: function(studentId, modulo, categoria, index) {
+        if (!confirm('¿Eliminar esta actividad?')) return;
+        var openState = this.saveAccordionState();
+        var students = Data.getAll();
+        for (var i = 0; i < students.length; i++) {
+            if (students[i].id === studentId) {
+                students[i].modulos[modulo][categoria].splice(index, 1);
+                Data.save(students);
+                break;
+            }
+        }
+        this.renderCalificaciones();
+        var self = this;
+        setTimeout(function() { self.restoreAccordionState(openState); }, 50);
+    },
+
+    remitirPsicologia: function(id) {
+        var student = Data.getById(id);
+        if (!student) return;
+        
+        var motivo = prompt('Ingrese el motivo de la remisión a Psicología para ' + student.nombre + ':');
+        if (motivo === null || !motivo.trim()) {
+            alert('Debe ingresar un motivo para la remisión');
+            return;
+        }
+        
+        var openState = this.saveAccordionState();
+        var now = new Date().toLocaleDateString('es-CO');
+        var students = Data.getAll();
+        for (var i = 0; i < students.length; i++) {
+            if (students[i].id === id) {
+                students[i].estadoAlerta = true;
+                students[i].historialAlertas.push({
+                    fecha: now,
+                    motivo: motivo
+                });
+                students[i].bitacoras.unshift({
+                    fecha: now,
+                    observacion: 'Remisión desde Docente: ' + motivo
+                });
+                break;
+            }
+        }
+        Data.save(students);
+        this.renderCalificaciones();
+        this.renderTable();
+        this.updateKPIs();
+        var self = this;
+        setTimeout(function() { self.restoreAccordionState(openState); }, 50);
+        alert(student.nombre + ' ha sido remitido(a) a Psicología');
+    },
+
+    updateKPIs: function() {
+        var students = Data.getAll();
+        var activos = students.filter(function(s) { return s.estado === 'Activo'; });
+        var alertas = Data.getAlerts();
+        var suma = 0, count = 0;
+        activos.forEach(function(s) {
+            var avg = Data.calculateGlobalAverage(s);
+            if (avg !== null) { suma += avg; count++; }
+        });
+        document.getElementById('kpiTotal').textContent = students.length;
+        document.getElementById('kpiActivos').textContent = activos.length;
+        document.getElementById('kpiAlertas').textContent = alertas.length;
+        document.getElementById('kpiPromedio').textContent = count > 0 ? (suma / count).toFixed(1) : '0.0';
+    }
+};
+
+// ==========================================
+// PSICOLOGÍA MODULE
+// ==========================================
+var Psicologia = {
+    selectedAlertId: null,
+    selectedAcceptedId: null,
+
+    init: function() {
+        this.renderAlertList();
+        this.renderAcceptedList();
+        this.renderHistory();
+        this.selectedAlertId = null;
+        this.selectedAcceptedId = null;
+        document.getElementById('alertDetailPanel').style.display = 'none';
+        document.getElementById('noAlertSelected').style.display = 'block';
+        document.getElementById('bitacoraPanel').style.display = 'none';
+        document.getElementById('noBitacoraSelected').style.display = 'block';
+    },
+
+    switchTab: function(tab) {
+        document.querySelectorAll('.tab').forEach(function(t) { t.classList.remove('active'); });
+        document.querySelectorAll('.tab-content').forEach(function(c) { c.classList.remove('active'); });
+        event.target.classList.add('active');
+        document.getElementById('tab-' + tab).classList.add('active');
+    },
+
+    // ========== ALERTAS ==========
+    renderAlertList: function() {
+        var container = document.getElementById('alertList');
+        var alerts = Data.getAlerts();
+        document.getElementById('alertBadge').textContent = alerts.length;
+        
+        if (alerts.length === 0) {
+            container.innerHTML = '<p class="no-alerts">No hay estudiantes remitidos</p>';
+            return;
+        }
+        
+        var html = '';
+        alerts.forEach(function(s) {
+            var sel = Psicologia.selectedAlertId === s.id ? ' selected' : '';
+            var initials = s.nombre.split(' ').map(function(n) { return n[0]; }).join('');
+            var lastAlert = s.historialAlertas.length > 0 ? s.historialAlertas[s.historialAlertas.length - 1] : null;
+            var motivo = lastAlert ? lastAlert.motivo : 'Sin motivo especificado';
+            
+            html += '<div class="alert-item' + sel + '" onclick="Psicologia.selectAlertStudent(' + s.id + ')">';
+            html += '<div class="avatar">' + initials + '</div>';
+            html += '<div class="info"><div class="name">' + s.nombre + '</div><div class="detail">' + motivo + '</div></div>';
+            html += '</div>';
+        });
+        container.innerHTML = html;
+    },
+
+    selectAlertStudent: function(id) {
+        this.selectedAlertId = id;
+        var s = Data.getById(id);
+        if (!s) return;
+        
+        document.getElementById('alertDetailPanel').style.display = 'block';
+        document.getElementById('noAlertSelected').style.display = 'none';
+        
+        var lastAlert = s.historialAlertas.length > 0 ? s.historialAlertas[s.historialAlertas.length - 1] : null;
+        var motivo = lastAlert ? lastAlert.motivo : 'No especificado';
+        var fecha = lastAlert ? lastAlert.fecha : '-';
+        
+        var html = '<div class="alert-detail-header">';
+        html += '<h3>' + s.nombre + '</h3>';
+        html += '<p class="reason">Motivo de remisión: ' + motivo + '</p>';
+        html += '</div>';
+        
+        html += '<div class="detail-field"><label>Fecha de Remisión:</label><div class="value">' + fecha + '</div></div>';
+        html += '<div class="detail-field"><label>Cédula:</label><div class="value">' + s.cedula + '</div></div>';
+        html += '<div class="detail-field"><label>Programa:</label><div class="value">' + s.carrera + '</div></div>';
+        html += '<div class="detail-field"><label>Correo:</label><div class="value">' + s.correo + '</div></div>';
+        html += '<div class="detail-field"><label>Celular:</label><div class="value">' + (s.celular || '-') + '</div></div>';
+        
+        html += '<div class="detail-field"><label>Descripción de la remisión:</label>';
+        html += '<div class="value" style="background:#f8f9fa;padding:12px;border-radius:6px;border-left:3px solid #004085;">' + motivo + '</div></div>';
+        
+        html += '<div class="rejection-reason" id="rejectionSection" style="display:none;">';
+        html += '<label style="font-weight:500;color:#DC3545;">Razón de rechazo:</label>';
+        html += '<textarea id="rejectionReason" placeholder="Indique la razón por la que no acepta este caso..."></textarea>';
+        html += '</div>';
+        
+        html += '<div class="action-buttons-psych">';
+        html += '<button class="btn-accept" onclick="Psicologia.acceptStudent(' + s.id + ')"><i class="fas fa-check"></i> Aceptar Caso</button>';
+        html += '<button class="btn-reject" onclick="Psicologia.showRejection()"><i class="fas fa-times"></i> No Aceptar</button>';
+        html += '</div>';
+        
+        document.getElementById('alertDetailContent').innerHTML = html;
+        this.renderAlertList();
+    },
+
+    showRejection: function() {
+        document.getElementById('rejectionSection').style.display = 'block';
+        document.querySelector('.btn-accept').style.display = 'none';
+        document.querySelector('.btn-reject').innerHTML = '<i class="fas fa-times"></i> Confirmar Rechazo';
+        document.querySelector('.btn-reject').onclick = function() { Psicologia.rejectStudent(Psicologia.selectedAlertId); };
+    },
+
+    acceptStudent: function(id) {
+        var students = Data.getAll();
+        var now = new Date().toLocaleDateString('es-CO');
+        for (var i = 0; i < students.length; i++) {
+            if (students[i].id === id) {
+                students[i].estadoAlerta = false;
+                students[i].aceptadoPsicologia = true;
+                students[i].fechaAceptacion = now;
+                if (!students[i].seguimientos) students[i].seguimientos = [];
+                students[i].bitacoras.unshift({ fecha: now, observacion: 'Caso aceptado por psicólogo' });
+                Data.save(students);
+                break;
+            }
+        }
+        this.selectedAlertId = null;
+        document.getElementById('alertDetailPanel').style.display = 'none';
+        document.getElementById('noAlertSelected').style.display = 'block';
+        this.renderAlertList();
+        this.renderAcceptedList();
+        this.renderHistory();
+        Docente.renderTable();
+        Docente.renderCalificaciones();
+        alert('Estudiante aceptado exitosamente');
+    },
+
+    rejectStudent: function(id) {
+        var reason = document.getElementById('rejectionReason').value.trim();
+        if (!reason) { alert('Debe indicar la razón del rechazo'); return; }
+        
+        var students = Data.getAll();
+        var now = new Date().toLocaleDateString('es-CO');
+        for (var i = 0; i < students.length; i++) {
+            if (students[i].id === id) {
+                students[i].estadoAlerta = false;
+                students[i].bitacoras.unshift({ fecha: now, observacion: 'Caso rechazado por psicólogo: ' + reason });
+                Data.save(students);
+                break;
+            }
+        }
+        this.selectedAlertId = null;
+        document.getElementById('alertDetailPanel').style.display = 'none';
+        document.getElementById('noAlertSelected').style.display = 'block';
+        this.renderAlertList();
+        Docente.renderTable();
+        Docente.renderCalificaciones();
+        alert('Caso rechazado');
+    },
+
+    // ========== BITÁCORAS ==========
+    renderAcceptedList: function() {
+        var container = document.getElementById('acceptedList');
+        var students = Data.getAll().filter(function(s) { return s.aceptadoPsicologia === true; });
+        
+        if (students.length === 0) {
+            container.innerHTML = '<p class="no-alerts">No hay estudiantes aceptados</p>';
+            return;
+        }
+        
+        var html = '';
+        students.forEach(function(s) {
+            var sel = Psicologia.selectedAcceptedId === s.id ? ' selected' : '';
+            var initials = s.nombre.split(' ').map(function(n) { return n[0]; }).join('');
+            
+            html += '<div class="alert-item' + sel + '" onclick="Psicologia.selectAcceptedStudent(' + s.id + ')">';
+            html += '<div class="avatar">' + initials + '</div>';
+            html += '<div class="info"><div class="name">' + s.nombre + '</div><div class="detail">' + s.carrera + '</div></div>';
+            html += '</div>';
+        });
+        container.innerHTML = html;
+    },
+
+    selectAcceptedStudent: function(id) {
+        this.selectedAcceptedId = id;
+        var s = Data.getById(id);
+        if (!s) return;
+        
+        document.getElementById('bitacoraPanel').style.display = 'block';
+        document.getElementById('noBitacoraSelected').style.display = 'none';
+        
+        var today = new Date().toISOString().split('T')[0];
+        
+        var html = '<h2 style="color:#004085;margin-bottom:20px;">Registrar Seguimiento</h2>';
+        html += '<div class="alert-detail-header"><h3>' + s.nombre + '</h3></div>';
+        
+        // Historial de seguimientos
+        if (s.seguimientos && s.seguimientos.length > 0) {
+            html += '<h4 style="margin-bottom:10px;color:#333;">Historial de Seguimientos</h4>';
+            html += '<div style="max-height:200px;overflow-y:auto;margin-bottom:20px;">';
+            s.seguimientos.forEach(function(seg) {
+                html += '<div class="timeline-entry">';
+                html += '<div class="timeline-icon"><i class="fas fa-clock"></i></div>';
+                html += '<div class="timeline-content">';
+                html += '<div class="timeline-date">' + seg.fechaSeguimiento + ' - ' + seg.tipoSeguimiento + '</div>';
+                html += '<div class="timeline-text"><strong>Módulo:</strong> ' + seg.modulo + '<br>' + seg.descripcion + '</div>';
+                html += '</div></div>';
+            });
+            html += '</div>';
+        }
+        
+        // Formulario de nuevo seguimiento
+        html += '<h4 style="margin-bottom:15px;color:#333;">Nuevo Seguimiento</h4>';
+        html += '<div class="bitacora-form-grid">';
+        
+        html += '<div class="form-group-psych"><label>Tipo de Seguimiento *</label>';
+        html += '<select id="tipoSeguimiento"><option value="">Seleccione...</option><option value="Seguimiento">Seguimiento</option><option value="Evaluación">Evaluación</option><option value="Orientación">Orientación</option><option value="Intervención">Intervención</option><option value="Otra">Otra</option></select></div>';
+        
+        var modulos = CONFIG.PROGRAMAS[s.carrera] ? CONFIG.PROGRAMAS[s.carrera].modulos : [];
+        html += '<div class="form-group-psych"><label>Módulo a Mejorar *</label>';
+        html += '<select id="moduloMejorar"><option value="">Seleccione...</option>';
+        modulos.forEach(function(m) { html += '<option value="' + m + '">' + m + '</option>'; });
+        html += '</select></div>';
+        
+        html += '<div class="form-group-psych"><label>Fecha de Seguimiento *</label>';
+        html += '<input type="date" id="fechaSeguimiento" value="' + today + '"></div>';
+        
+        html += '<div class="form-group-psych"><label>Próximo Seguimiento *</label>';
+        html += '<input type="date" id="proximaFecha"></div>';
+        
+        html += '<div class="form-group-psych full-width"><label>Descripción del Contenido *</label>';
+        html += '<textarea id="descripcionSeguimiento" placeholder="Describa las observaciones y detalles del seguimiento..."></textarea></div>';
+        
+        html += '<div class="form-group-psych full-width"><label>Plan de Acción *</label>';
+        html += '<textarea id="planAccion" placeholder="Describa el plan de acción a seguir..."></textarea></div>';
+        
+        html += '</div>';
+        
+        html += '<div class="action-buttons-psych" style="margin-top:20px;">';
+        html += '<button class="btn-accept" onclick="Psicologia.saveSeguimiento()"><i class="fas fa-save"></i> Guardar Seguimiento</button>';
+        html += '<button class="btn-resolver" style="background:white;color:#28a745;border:2px solid #28a745;padding:12px 25px;border-radius:6px;cursor:pointer;" onclick="Psicologia.resolveCase()"><i class="fas fa-check-double"></i> Resolver Caso</button>';
+        html += '</div>';
+        
+        document.getElementById('bitacoraContent').innerHTML = html;
+        this.renderAcceptedList();
+    },
+
+    saveSeguimiento: function() {
+        if (!this.selectedAcceptedId) return;
+        
+        var tipo = document.getElementById('tipoSeguimiento').value;
+        var modulo = document.getElementById('moduloMejorar').value;
+        var fecha = document.getElementById('fechaSeguimiento').value;
+        var proxima = document.getElementById('proximaFecha').value;
+        var descripcion = document.getElementById('descripcionSeguimiento').value.trim();
+        var plan = document.getElementById('planAccion').value.trim();
+        
+        if (!tipo || !modulo || !fecha || !proxima || !descripcion || !plan) {
+            alert('Todos los campos son obligatorios');
+            return;
+        }
+        
+        var students = Data.getAll();
+        for (var i = 0; i < students.length; i++) {
+            if (students[i].id === this.selectedAcceptedId) {
+                if (!students[i].seguimientos) students[i].seguimientos = [];
+                students[i].seguimientos.unshift({
+                    tipoSeguimiento: tipo,
+                    modulo: modulo,
+                    fechaSeguimiento: fecha,
+                    proximaFecha: proxima,
+                    descripcion: descripcion,
+                    planAccion: plan
+                });
+                students[i].bitacoras.unshift({
+                    fecha: new Date().toLocaleDateString('es-CO'),
+                    observacion: 'Seguimiento registrado: ' + tipo + ' - Módulo: ' + modulo
+                });
+                Data.save(students);
+                break;
+            }
+        }
+        this.selectAcceptedStudent(this.selectedAcceptedId);
+        alert('Seguimiento guardado exitosamente');
+    },
+
+    resolveCase: function() {
+        if (!this.selectedAcceptedId) return;
+        var s = Data.getById(this.selectedAcceptedId);
+        if (!confirm('¿Resolver caso de ' + s.nombre + '? El estudiante saldrá del seguimiento.')) return;
+        
+        var students = Data.getAll();
+        var now = new Date().toLocaleDateString('es-CO');
+        for (var i = 0; i < students.length; i++) {
+            if (students[i].id === this.selectedAcceptedId) {
+                students[i].aceptadoPsicologia = false;
+                students[i].fechaResolucion = now;
+                students[i].bitacoras.unshift({ fecha: now, observacion: 'Caso resuelto por psicólogo' });
+                Data.save(students);
+                break;
+            }
+        }
+        this.selectedAcceptedId = null;
+        document.getElementById('bitacoraPanel').style.display = 'none';
+        document.getElementById('noBitacoraSelected').style.display = 'block';
+        this.renderAcceptedList();
+        this.renderHistory();
+        alert('Caso resuelto exitosamente');
+    },
+
+    // ========== HISTORIAL ==========
+    renderHistory: function() {
+        var container = document.getElementById('historyContainer');
+        var students = Data.getAll().filter(function(s) { return s.aceptadoPsicologia === true || s.fechaResolucion; });
+        
+        if (students.length === 0) {
+            container.innerHTML = '<p style="color:#666;text-align:center;padding:40px;">No hay estudiantes en historial</p>';
+            return;
+        }
+        
+        var html = '';
+        students.forEach(function(s) {
+            var isResolved = !s.aceptadoPsicologia && s.fechaResolucion;
+            html += '<div class="history-card' + (isResolved ? ' resolved' : '') + '">';
+            html += '<div class="history-header">';
+            html += '<span class="history-name">' + s.nombre + '</span>';
+            html += '<span class="history-status ' + (isResolved ? 'resolved' : 'active') + '">' + (isResolved ? 'Resuelto' : 'En Seguimiento') + '</span>';
+            html += '</div>';
+            html += '<div class="history-info">';
+            html += '<div class="field"><div class="field-label">Fecha de Aceptación</div><div class="field-value">' + (s.fechaAceptacion || '-') + '</div></div>';
+            html += '<div class="field"><div class="field-label">Programa</div><div class="field-value">' + s.carrera + '</div></div>';
+            html += '<div class="field"><div class="field-label">Seguimientos</div><div class="field-value">' + (s.seguimientos ? s.seguimientos.length : 0) + '</div></div>';
+            if (isResolved) {
+                html += '<div class="field"><div class="field-label">Fecha Resolución</div><div class="field-value">' + s.fechaResolucion + '</div></div>';
+            }
+            html += '</div>';
+            html += '</div>';
+        });
+        container.innerHTML = html;
+    }
+};
+
+// ==========================================
+// NAVIGATION
+// ==========================================
+function changeView(viewId) {
+    document.querySelectorAll('.view').forEach(function(v) { v.classList.remove('active'); });
+    var target = document.getElementById(viewId);
+    if (target) target.classList.add('active');
+    Data.updateSync();
+}
+
+// ==========================================
+// INIT
+// ==========================================
+document.addEventListener('DOMContentLoaded', function() {
+    changeView('view-home');
+    Data.updateSync();
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+# Old separate files (everything is now in index.html)
+app.js
+styles.css
+
+# OS files
+Thumbs.db
+.DS_Store
+
+# Editor files
+*.swp
+*.swo
+*~
