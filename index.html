@@ -323,8 +323,203 @@
         .btn-remitir-small:hover { background: #c82333; }
         .low-grade { background: #fff3cd; border-left: 3px solid #FFC107; }
 
-        @media (max-width: 1200px) { .kpi-container { grid-template-columns: repeat(2, 1fr); } .detail-container { grid-template-columns: 1fr; } }
-        @media (max-width: 900px) { .psychology-layout { grid-template-columns: 1fr; } .notes-grid { grid-template-columns: repeat(2, 1fr); } }
+        /* ========== RESPONSIVE - TABLETS (max-width: 1024px) ========== */
+        @media (max-width: 1024px) {
+            .kpi-container { grid-template-columns: repeat(2, 1fr); }
+            .detail-container { grid-template-columns: 1fr; }
+            .role-cards { gap: 20px; }
+            .role-card { padding: 25px 20px; }
+            .info-section { grid-template-columns: repeat(2, 1fr); }
+            .info-section .info-card:last-child { grid-column: 1 / -1; max-width: 300px; margin: 0 auto; }
+            .psychology-layout-alerts, .psychology-layout-bitacoras { grid-template-columns: 280px 1fr; }
+            .history-info { grid-template-columns: repeat(2, 1fr); }
+            .bitacora-form-grid { grid-template-columns: 1fr; }
+            .bitacora-form-grid .full-width { grid-column: 1; }
+            .notes-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        /* ========== RESPONSIVE - TABLETS PEQUEÑAS (max-width: 768px) ========== */
+        @media (max-width: 768px) {
+            /* Header */
+            .dashboard-header { padding: 12px 15px; flex-direction: column; gap: 10px; text-align: center; }
+            .dashboard-header h1 { font-size: 1.1rem; }
+            .header-actions { width: 100%; justify-content: center; }
+            .btn-nuevo, .btn-logout { padding: 8px 15px; font-size: 0.8rem; }
+
+            /* Breadcrumbs */
+            .breadcrumbs { padding: 10px 15px; font-size: 0.8rem; }
+
+            /* Dashboard Content */
+            .dashboard-content { padding: 15px; }
+
+            /* Home Hero */
+            .home-hero { padding: 40px 20px 30px; }
+            .home-hero h1 { font-size: 1.6rem; }
+            .home-hero p { font-size: 0.95rem; }
+            .home-content { padding: 25px 15px; }
+
+            /* Role Cards */
+            .role-cards { grid-template-columns: 1fr; gap: 20px; }
+            .role-card { padding: 25px 20px; }
+            .role-card .card-icon { width: 65px; height: 65px; }
+            .role-card .card-icon i { font-size: 1.8rem; }
+            .role-card h3 { font-size: 1.15rem; }
+            .role-card .btn-role { padding: 10px 30px; font-size: 0.9rem; }
+
+            /* Info Section */
+            .info-section { grid-template-columns: 1fr; gap: 15px; }
+            .info-section .info-card:last-child { max-width: none; }
+
+            /* KPIs */
+            .kpi-container { grid-template-columns: 1fr 1fr; gap: 12px; }
+            .kpi-card { padding: 14px 15px; gap: 10px; }
+            .kpi-icon { width: 40px; height: 40px; }
+            .kpi-icon i { font-size: 1.1rem; }
+            .kpi-value { font-size: 1.3rem; }
+            .kpi-label { font-size: 0.75rem; }
+
+            /* Filters */
+            .filters-container { flex-direction: column; gap: 10px; }
+            .search-input { min-width: auto; width: 100%; }
+            .filter-select { width: 100%; }
+
+            /* Tabs */
+            .tabs { overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+            .tabs::-webkit-scrollbar { display: none; }
+            .tab { padding: 10px 15px; font-size: 0.85rem; white-space: nowrap; }
+
+            /* Psychology Layout */
+            .psychology-layout-alerts, .psychology-layout-bitacoras { grid-template-columns: 1fr; min-height: auto; }
+            .panel-left-alerts, .panel-left-bitacoras { max-height: 300px; }
+            .alert-list { max-height: 250px; }
+            .action-buttons-psych { flex-direction: column; gap: 10px; }
+            .btn-accept, .btn-reject { width: 100%; text-align: center; }
+
+            /* History */
+            .history-info { grid-template-columns: 1fr; gap: 8px; }
+            .history-header { flex-direction: column; align-items: flex-start; gap: 8px; }
+
+            /* Modals */
+            .modal { padding: 15px; }
+            .modal-content { padding: 20px; max-width: 100%; }
+            .form-row { grid-template-columns: 1fr; gap: 10px; }
+
+            /* Accordion */
+            .accordion-header { padding: 12px 14px; gap: 8px; }
+            .accordion-title { font-size: 0.9rem; }
+            .modules-body { padding-left: 10px; }
+            .categories-body { padding-left: 10px; }
+
+            /* Detail Panel */
+            .detail-row { flex-direction: column; gap: 4px; }
+        }
+
+        /* ========== RESPONSIVE - MÓVILES (max-width: 480px) ========== */
+        @media (max-width: 480px) {
+            /* Home Hero */
+            .home-hero { padding: 30px 15px 25px; }
+            .home-hero h1 { font-size: 1.3rem; }
+            .home-hero p { font-size: 0.85rem; }
+            .home-hero .subtitle { font-size: 0.8rem; }
+            .home-content { padding: 20px 10px; }
+            .role-section h2 { font-size: 1.2rem; }
+            .role-section .section-subtitle { font-size: 0.85rem; }
+
+            /* Role Cards */
+            .role-card { padding: 20px 15px; }
+            .role-card .card-icon { width: 55px; height: 55px; }
+            .role-card .card-icon i { font-size: 1.5rem; }
+            .role-card h3 { font-size: 1.05rem; }
+            .role-card p { font-size: 0.8rem; }
+            .role-card .features { padding: 12px; }
+            .role-card .features li { font-size: 0.8rem; padding: 4px 0; }
+            .role-card .btn-role { padding: 10px 25px; font-size: 0.85rem; width: 100%; }
+
+            /* Info Cards */
+            .info-card { padding: 18px 15px; }
+            .info-card h4 { font-size: 0.9rem; }
+            .info-card p { font-size: 0.8rem; }
+
+            /* KPIs */
+            .kpi-container { grid-template-columns: 1fr; gap: 10px; }
+            .kpi-card { padding: 12px; }
+            .kpi-icon { width: 36px; height: 36px; }
+            .kpi-icon i { font-size: 1rem; }
+            .kpi-value { font-size: 1.2rem; }
+
+            /* Header */
+            .dashboard-header h1 { font-size: 1rem; }
+            .btn-nuevo { padding: 6px 12px; font-size: 0.75rem; }
+            .btn-logout { padding: 6px 12px; font-size: 0.75rem; }
+
+            /* Table */
+            .students-table { min-width: 700px; }
+            .students-table th, .students-table td { padding: 8px 6px; font-size: 0.8rem; }
+            .btn-action { padding: 4px 8px; font-size: 0.7rem; }
+
+            /* Modals */
+            .modal-content { padding: 15px; border-radius: 10px; }
+            .modal-header h2 { font-size: 1.1rem; }
+            .close-modal { top: 10px; right: 15px; font-size: 24px; }
+            .form-group label { font-size: 0.85rem; }
+            .form-group input, .form-group select { padding: 8px; font-size: 0.85rem; }
+
+            /* Accordion */
+            .accordion-header { padding: 10px 12px; gap: 6px; }
+            .accordion-title { font-size: 0.85rem; }
+            .accordion-count { font-size: 0.75rem; padding: 2px 8px; }
+            .student-name-acc { font-size: 0.85rem; }
+            .student-cedula { font-size: 0.75rem; }
+            .student-avg { font-size: 0.95rem; min-width: 35px; }
+            .module-name-acc { font-size: 0.85rem; }
+            .module-avg-acc { font-size: 0.9rem; }
+            .cat-name { font-size: 0.8rem; }
+            .btn-remitir-small { padding: 3px 8px; font-size: 0.7rem; }
+
+            /* Psychology */
+            .panel-left-alerts, .panel-left-bitacoras { padding: 12px; max-height: 250px; }
+            .panel-right-alerts, .panel-right-bitacoras { padding: 15px; }
+            .alert-item { padding: 10px; gap: 8px; }
+            .alert-item .avatar { width: 30px; height: 30px; font-size: 0.75rem; }
+            .alert-item .name { font-size: 0.85rem; }
+            .alert-detail-header h3 { font-size: 1rem; }
+            .detail-field label { font-size: 0.8rem; }
+            .detail-field .value { font-size: 0.85rem; }
+            .btn-accept, .btn-reject { padding: 10px 20px; font-size: 0.85rem; }
+
+            /* Bitacora Form */
+            .form-group-psych label { font-size: 0.8rem; }
+            .form-group-psych input, .form-group-psych select, .form-group-psych textarea { padding: 8px; font-size: 0.8rem; }
+
+            /* History Cards */
+            .history-card { padding: 15px; }
+            .history-name { font-size: 0.95rem; }
+            .history-info { font-size: 0.8rem; }
+
+            /* Notes Grid */
+            .notes-grid { grid-template-columns: 1fr 1fr; gap: 6px; }
+            .note-box { padding: 6px; }
+            .note-box .module-name { font-size: 0.65rem; }
+            .note-box .note-value { font-size: 0.95rem; }
+
+            /* Footer */
+            .footer { padding: 10px 15px; font-size: 0.75rem; }
+            .footer .sync-info { font-size: 0.65rem; }
+
+            /* Header Title */
+            .header { padding: 15px 20px; }
+            .header h1 { font-size: 1.3rem; }
+        }
+
+        /* ========== RESPONSIVE - MÓVILES PEQUEÑOS (max-width: 360px) ========== */
+        @media (max-width: 360px) {
+            .home-hero h1 { font-size: 1.15rem; }
+            .role-card h3 { font-size: 0.95rem; }
+            .role-card .btn-role { font-size: 0.8rem; padding: 8px 20px; }
+            .kpi-card { flex-direction: column; text-align: center; gap: 8px; }
+            .info-card { padding: 15px 12px; }
+            .students-table { min-width: 600px; }
+        }
     </style>
 </head>
 <body>

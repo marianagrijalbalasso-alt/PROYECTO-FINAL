@@ -76,6 +76,54 @@
         .badge { display: inline-block; background: rgba(255,255,255,0.15); padding: 8px 20px; border-radius: 20px; font-size: 0.95rem; margin-top: 15px; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         .slide.active .content { animation: fadeIn 0.5s ease; }
+
+        /* RESPONSIVE PRESENTATION */
+        @media (max-width: 1024px) {
+            .slide { padding: 40px 50px; }
+            h1 { font-size: 2.5rem; }
+            h2 { font-size: 1.8rem; }
+            .title-slide h1 { font-size: 2.8rem; }
+            .two-col { gap: 25px; }
+        }
+        @media (max-width: 768px) {
+            .slide { padding: 30px 25px; padding-bottom: 70px; }
+            h1 { font-size: 1.8rem; }
+            h2 { font-size: 1.4rem; margin-bottom: 15px; }
+            h3 { font-size: 1.1rem; }
+            p { font-size: 1rem; }
+            .subtitle { font-size: 1rem; }
+            .title-slide h1 { font-size: 2rem; }
+            .title-slide .logo { font-size: 3rem; }
+            .two-col, .three-col { grid-template-columns: 1fr; gap: 15px; margin-top: 15px; }
+            .card { padding: 18px; }
+            .card-icon { width: 45px; height: 45px; font-size: 1.2rem; }
+            .code-block { font-size: 0.75rem; padding: 12px; }
+            .table-slide { font-size: 0.8rem; }
+            .table-slide th, .table-slide td { padding: 8px 10px; }
+            .flow { gap: 8px; }
+            .flow-step { padding: 8px 12px; font-size: 0.8rem; min-width: 80px; }
+            .flow-arrow { font-size: 1rem; }
+            .feature-list li { font-size: 0.9rem; padding: 5px 0; }
+            .img-grid { grid-template-columns: 1fr; gap: 15px; }
+            .nav-bar { padding: 12px 20px; }
+            .nav-btn { padding: 8px 15px; font-size: 0.85rem; }
+        }
+        @media (max-width: 480px) {
+            .slide { padding: 20px 15px; padding-bottom: 65px; }
+            h1 { font-size: 1.4rem; }
+            h2 { font-size: 1.2rem; }
+            h3 { font-size: 1rem; }
+            p { font-size: 0.9rem; }
+            .title-slide h1 { font-size: 1.6rem; }
+            .title-slide .logo { font-size: 2.5rem; }
+            .badge { font-size: 0.8rem; padding: 6px 15px; }
+            .card { padding: 15px; }
+            .card-icon { width: 40px; height: 40px; font-size: 1rem; }
+            .code-block { font-size: 0.7rem; padding: 10px; }
+            .flow-step { padding: 6px 10px; font-size: 0.75rem; min-width: 70px; }
+            .nav-btn { padding: 6px 12px; font-size: 0.8rem; }
+            .page-indicator { font-size: 0.8rem; }
+        }
     </style>
 </head>
 <body>
